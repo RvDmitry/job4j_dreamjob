@@ -77,7 +77,9 @@ public class Store {
      * @param post Объявление.
      */
     public void save(Post post) {
-        post.setId(POST_ID.incrementAndGet());
+        if (post.getId() == 0) {
+            post.setId(POST_ID.incrementAndGet());
+        }
         posts.put(post.getId(), post);
     }
 
@@ -86,7 +88,27 @@ public class Store {
      * @param candidate Кандидат.
      */
     public void save(Candidate candidate) {
-        candidate.setId(CANDIDATE_ID.incrementAndGet());
+        if (candidate.getId() == 0) {
+            candidate.setId(CANDIDATE_ID.incrementAndGet());
+        }
         candidates.put(candidate.getId(), candidate);
+    }
+
+    /**
+     * Метод осуществляет поиск вакансии по ее id.
+     * @param id Идентификатор вакансии.
+     * @return Вакансия.
+     */
+    public Post findPostById(int id) {
+        return posts.get(id);
+    }
+
+    /**
+     * Метод осуществляет поиск кандидата по его id.
+     * @param id Идентификатор кандидата.
+     * @return Кандидат.
+     */
+    public Candidate findCandidateById(int id) {
+        return candidates.get(id);
     }
 }
