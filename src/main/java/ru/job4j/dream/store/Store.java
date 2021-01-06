@@ -6,6 +6,7 @@ import ru.job4j.dream.model.Post;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Class Store
@@ -18,6 +19,11 @@ public class Store {
      * Синглтон, создает объект хранилища.
      */
     private static final Store INST = new Store();
+    /**
+     * Поле генерирует идентификатор объявления.
+     */
+    private static final AtomicInteger POST_ID = new AtomicInteger(4);
+
     /**
      * Коллекция хранит объявления.
      */
@@ -61,5 +67,14 @@ public class Store {
      */
     public Collection<Candidate> findAllCandidates() {
         return candidates.values();
+    }
+
+    /**
+     * Метод сохраняет объявление в хранилище.
+     * @param post Объявление.
+     */
+    public void save(Post post) {
+        post.setId(POST_ID.incrementAndGet());
+        posts.put(post.getId(), post);
     }
 }
