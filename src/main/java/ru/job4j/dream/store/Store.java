@@ -23,7 +23,10 @@ public class Store {
      * Поле генерирует идентификатор объявления.
      */
     private static final AtomicInteger POST_ID = new AtomicInteger(4);
-
+    /**
+     * Поле генерирует идентификатор кандидата.
+     */
+    private static final AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
     /**
      * Коллекция хранит объявления.
      */
@@ -76,5 +79,14 @@ public class Store {
     public void save(Post post) {
         post.setId(POST_ID.incrementAndGet());
         posts.put(post.getId(), post);
+    }
+
+    /**
+     * Метод сохранает кандидата в хранилище.
+     * @param candidate Кандидат.
+     */
+    public void save(Candidate candidate) {
+        candidate.setId(CANDIDATE_ID.incrementAndGet());
+        candidates.put(candidate.getId(), candidate);
     }
 }
