@@ -31,12 +31,10 @@ public class Post {
      * Конструктор создает объявление о вакансии.
      * @param id Идентификатор вакансии.
      * @param name Наименование вакансии.
-     * @param description Описание вакансии.
      */
-    public Post(int id, String name, String description) {
+    public Post(int id, String name) {
         this.id = id;
         this.name = name;
-        this.description = description;
         created = LocalDate.now();
     }
 
