@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class PsqlStore
@@ -21,6 +23,11 @@ import java.util.Properties;
  * @version 1
  */
 public class PsqlStore implements Store {
+    /**
+     * Поле создает логер.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(PsqlStore.class.getName());
+
     /**
      * Поле содержит пул соединений с БД.
      */
@@ -83,7 +90,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка запроса.", e);
         }
         return posts;
     }
@@ -104,7 +111,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка запроса.", e);
         }
         return candidates;
     }
@@ -152,8 +159,9 @@ public class PsqlStore implements Store {
                     post.setId(id.getInt(1));
                 }
             }
+            LOG.info("Создана вакансия {}", post);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка записи.", e);
         }
         return post;
     }
@@ -175,8 +183,9 @@ public class PsqlStore implements Store {
                     candidate.setId(id.getInt(1));
                 }
             }
+            LOG.info("Создан кандидат {}", candidate);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка записи.", e);
         }
         return candidate;
     }
@@ -192,8 +201,9 @@ public class PsqlStore implements Store {
             ps.setString(1, post.getName());
             ps.setInt(2, post.getId());
             ps.executeUpdate();
+            LOG.info("Вакансия обновлена {}", post);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка обновления.", e);
         }
     }
 
@@ -209,8 +219,9 @@ public class PsqlStore implements Store {
             ps.setString(1, candidate.getName());
             ps.setInt(2, candidate.getId());
             ps.executeUpdate();
+            LOG.info("Кандидат обновлен {}", candidate);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка обновления.", e);
         }
     }
 
@@ -232,7 +243,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка запроса.", e);
         }
         return post;
     }
@@ -255,7 +266,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка запроса.", e);
         }
         return candidate;
     }
