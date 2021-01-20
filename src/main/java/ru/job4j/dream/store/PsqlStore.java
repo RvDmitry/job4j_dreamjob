@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -107,7 +108,9 @@ public class PsqlStore implements Store {
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name")));
+                    Candidate candidate = new Candidate(it.getInt("id"), it.getString("name"));
+                    candidate.setPhotoId(it.getInt("photoid"));
+                    candidates.add(candidate);
                 }
             }
         } catch (Exception e) {
@@ -173,10 +176,14 @@ public class PsqlStore implements Store {
      */
     private Candidate create(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =  cn.prepareStatement("INSERT INTO candidate(name) VALUES (?)",
-                     PreparedStatement.RETURN_GENERATED_KEYS)
+             PreparedStatement ps =  cn.prepareStatement(
+                     "INSERT INTO candidate(name, photoid) VALUES (?, ?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS
+             )
         ) {
+            int photoId = createPhotoId();
             ps.setString(1, candidate.getName());
+            ps.setInt(2, photoId);
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -188,6 +195,26 @@ public class PsqlStore implements Store {
             LOG.error("Ошибка записи.", e);
         }
         return candidate;
+    }
+
+    /**
+     * Метод создает запись в таблице Photo, вызывая тем самым увелечение первичного ключа.
+     * @return Значение первичного ключа в таблице Photo.
+     */
+    private int createPhotoId() {
+        int id = 0;
+        try (Connection cn = pool.getConnection(); Statement st = cn.createStatement()) {
+            String query = "insert into photo default values";
+            st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            ResultSet rs = st.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+                LOG.info("Значение ключа получено.");
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка записи.", e);
+        }
+        return id;
     }
 
     /**
@@ -214,7 +241,9 @@ public class PsqlStore implements Store {
     private void update(Candidate candidate) {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =
-                     cn.prepareStatement("update candidate set name = ? where id = ?")
+                     cn.prepareStatement(
+                             "update candidate set name = ? where id = ?"
+                     )
         ) {
             ps.setString(1, candidate.getName());
             ps.setInt(2, candidate.getId());
@@ -263,11 +292,28 @@ public class PsqlStore implements Store {
                 if (rs.next()) {
                     String name = rs.getString("name");
                     candidate = new Candidate(id, name);
+                    candidate.setPhotoId(rs.getInt("photoid"));
                 }
             }
         } catch (Exception e) {
             LOG.error("Ошибка запроса.", e);
         }
         return candidate;
+    }
+
+    /**
+     * Метод удаляет кандидата из БД.
+     * @param id Идентификатор кандидата.
+     */
+    @Override
+    public void delete(int id) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("delete from candidate where id = ?")) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            LOG.info("Кандидат с идентификатором {} удален", id);
+        } catch (Exception e) {
+            LOG.error("Ошибка удаления.", e);
+        }
     }
 }

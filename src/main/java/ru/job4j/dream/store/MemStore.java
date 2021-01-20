@@ -60,6 +60,7 @@ public class MemStore implements Store {
      * Метод возвращает все объявления из хранилища.
      * @return Коллекция объявлений.
      */
+    @Override
     public Collection<Post> findAllPosts() {
         return posts.values();
     }
@@ -68,6 +69,7 @@ public class MemStore implements Store {
      * Метод возвращает всех кандидатов из хранилища.
      * @return Коллекция кандидатов.
      */
+    @Override
     public Collection<Candidate> findAllCandidates() {
         return candidates.values();
     }
@@ -76,6 +78,7 @@ public class MemStore implements Store {
      * Метод сохраняет объявление в хранилище.
      * @param post Объявление.
      */
+    @Override
     public void save(Post post) {
         if (post.getId() == 0) {
             post.setId(POST_ID.incrementAndGet());
@@ -87,6 +90,7 @@ public class MemStore implements Store {
      * Метод сохранает кандидата в хранилище.
      * @param candidate Кандидат.
      */
+    @Override
     public void save(Candidate candidate) {
         if (candidate.getId() == 0) {
             candidate.setId(CANDIDATE_ID.incrementAndGet());
@@ -99,6 +103,7 @@ public class MemStore implements Store {
      * @param id Идентификатор вакансии.
      * @return Вакансия.
      */
+    @Override
     public Post findPostById(int id) {
         return posts.get(id);
     }
@@ -108,7 +113,17 @@ public class MemStore implements Store {
      * @param id Идентификатор кандидата.
      * @return Кандидат.
      */
+    @Override
     public Candidate findCandidateById(int id) {
         return candidates.get(id);
+    }
+
+    /**
+     * Метод удаляет кандидата из хранилища.
+     * @param id Идентификатор кандидата.
+     */
+    @Override
+    public void delete(int id) {
+        candidates.remove(id);
     }
 }

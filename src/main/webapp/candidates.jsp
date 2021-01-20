@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ page isELIgnored = "false" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -22,6 +24,13 @@
 <body>
 <div class="container pt-3">
     <div class="row">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Home</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
                 Кандидаты
@@ -31,6 +40,8 @@
                     <thead>
                     <tr>
                         <th scope="col">Названия</th>
+                        <th scope="col">Фото</th>
+                        <th scope="col">Удалить кандидата</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -41,6 +52,19 @@
                                     <i class="fa fa-edit mr-3"></i>
                                 </a>
                                 <c:out value="${can.name}"/>
+                            </td>
+                            <td>
+                            <c:forEach items="${images}" var="image">
+                                <c:set var="name" value="${fn:split(image, '.')}" />
+                                <c:if test = "${can.photoId == name[0]}">
+                                    <img src="<c:url value='/download?name=${image}'/>" width="100px" height="100px"/>
+                                    <div><a href="<c:url value='/download?name=${image}'/>">Скачать фото</a></div>
+                                </c:if>
+                            </c:forEach>
+                                <a href="<c:url value='/upload?photoid=${can.photoId}'/>">Загрузить фото</a>
+                            </td>
+                            <td>
+                                <a href="<c:url value='/delete?id=${can.id}&photoid=${can.photoId}'/>">Удалить</a>
                             </td>
                         </tr>
                     </c:forEach>

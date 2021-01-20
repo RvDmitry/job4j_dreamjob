@@ -17,6 +17,10 @@ public class Candidate {
      * Имя кандидата.
      */
     private String name;
+    /**
+     * Идентификатор фото кандидата.
+     */
+    private int photoId;
 
     /**
      * Конструктор создает кандидата.
@@ -58,6 +62,22 @@ public class Candidate {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Метод возвращает идентификатор фото.
+     * @return Идентификатор фото.
+     */
+    public int getPhotoId() {
+        return photoId;
+    }
+
+    /**
+     * Метод задает идентификатор фото.
+     * @param photoId Идентификатор фото.
+     */
+    public void setPhotoId(int photoId) {
+        this.photoId = photoId;
     }
 
     @Override

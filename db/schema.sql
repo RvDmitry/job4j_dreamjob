@@ -5,5 +5,10 @@ CREATE TABLE post (
 
 CREATE TABLE candidate (
    id SERIAL PRIMARY KEY,
-   name TEXT
+   name TEXT,
+   photoId int references photo(id) not null
+);
+
+create table photo (
+    id serial primary key
 );

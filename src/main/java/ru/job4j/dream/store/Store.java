@@ -49,4 +49,10 @@ public interface Store {
      * @return Кандидат.
      */
     Candidate findCandidateById(int id);
+
+    /**
+     * Метод удаляет кандидата из БД.
+     * @param id Идентификатор кандидата.
+     */
+    void delete(int id);
 }
