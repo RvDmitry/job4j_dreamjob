@@ -11,7 +11,8 @@ import java.io.IOException;
 
 /**
  * Class PostServlet
- *
+ * Сервлет осуществляет вывод страницы вакансий.
+ * А также сохраняет вакансию в БД.
  * @author Dmitry Razumov
  * @version 1
  */
