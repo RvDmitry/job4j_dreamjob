@@ -2,6 +2,7 @@ package ru.job4j.dream.store;
 
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
+import ru.job4j.dream.model.User;
 
 import java.util.Collection;
 
@@ -25,6 +26,12 @@ public interface Store {
     Collection<Candidate> findAllCandidates();
 
     /**
+     * Метод возвращает всех пользователей из БД.
+     * @return Список пользователей.
+     */
+    Collection<User> findAllUsers();
+
+    /**
      * Метод сохраняет или обновляет вакансию в БД
      * @param post Вакансия.
      */
@@ -35,6 +42,12 @@ public interface Store {
      * @param candidate Кандидат.
      */
     void save(Candidate candidate);
+
+    /**
+     * Метод сохраняет или обновляет пользователя в БД.
+     * @param user Пользователь.
+     */
+    void save(User user);
 
     /**
      * Метод ищет вакансию в БД по ее идентификатору.
@@ -51,8 +64,27 @@ public interface Store {
     Candidate findCandidateById(int id);
 
     /**
+     * Метод ищет пользователя в БД по его идентификатору.
+     * @param id Идентификатор пользователя.
+     * @return Пользователь.
+     */
+    User findUserById(int id);
+
+    /**
      * Метод удаляет кандидата из БД.
      * @param id Идентификатор кандидата.
      */
-    void delete(int id);
+    void deleteCandidate(int id);
+
+    /**
+     * Метод удаляет вакансию из БД.
+     * @param id Идентификатор вакансии.
+     */
+    void deletePost(int id);
+
+    /**
+     * Метод удаляет пользователя из БД.
+     * @param id Идентификатор пользователя.
+     */
+    void deleteUser(int id);
 }

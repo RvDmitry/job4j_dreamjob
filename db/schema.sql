@@ -12,3 +12,10 @@ CREATE TABLE candidate (
 create table photo (
     id serial primary key
 );
+
+create table users (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    email TEXT,
+    password TEXT
+);

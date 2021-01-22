@@ -2,6 +2,7 @@ package ru.job4j.dream.store;
 
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
+import ru.job4j.dream.model.User;
 
 import java.util.Collection;
 import java.util.Map;
@@ -28,6 +29,10 @@ public class MemStore implements Store {
      */
     private static final AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
     /**
+     * Поле генерирует идентификатор пользователя.
+     */
+    private static final AtomicInteger USER_ID = new AtomicInteger(1);
+    /**
      * Коллекция хранит объявления.
      */
     private Map<Integer, Post> posts = new ConcurrentHashMap<>();
@@ -35,6 +40,10 @@ public class MemStore implements Store {
      * Коллекция хранит кандидатов.
      */
     private Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
+    /**
+     * Коллекция хранит пользователей.
+     */
+    private Map<Integer, User> users = new ConcurrentHashMap<>();
 
     /**
      * Конструктор инициализирует хранилище.
@@ -75,6 +84,15 @@ public class MemStore implements Store {
     }
 
     /**
+     * Метод возвращает всех пользователей из хранилища.
+     * @return Коллекция пользователей.
+     */
+    @Override
+    public Collection<User> findAllUsers() {
+        return users.values();
+    }
+
+    /**
      * Метод сохраняет объявление в хранилище.
      * @param post Объявление.
      */
@@ -99,6 +117,18 @@ public class MemStore implements Store {
     }
 
     /**
+     * Метод сохраняет пользователя в хранилище.
+     * @param user Пользователь.
+     */
+    @Override
+    public void save(User user) {
+        if (user.getId() == 0) {
+            user.setId(USER_ID.incrementAndGet());
+        }
+        users.put(user.getId(), user);
+    }
+
+    /**
      * Метод осуществляет поиск вакансии по ее id.
      * @param id Идентификатор вакансии.
      * @return Вакансия.
@@ -119,11 +149,39 @@ public class MemStore implements Store {
     }
 
     /**
+     * Метод осуществляет поиск пользователя по его id.
+     * @param id Идентификатор пользователя.
+     * @return Пользователь.
+     */
+    @Override
+    public User findUserById(int id) {
+        return users.get(id);
+    }
+
+    /**
      * Метод удаляет кандидата из хранилища.
      * @param id Идентификатор кандидата.
      */
     @Override
-    public void delete(int id) {
+    public void deleteCandidate(int id) {
         candidates.remove(id);
+    }
+
+    /**
+     * Метод удаляет вакансию из хранилища.
+     * @param id Идентификатор вакансии.
+     */
+    @Override
+    public void deletePost(int id) {
+        posts.remove(id);
+    }
+
+    /**
+     * Метод удаляет пользователя из хранилища.
+     * @param id Идентификатор пользователя.
+     */
+    @Override
+    public void deleteUser(int id) {
+        users.remove(id);
     }
 }

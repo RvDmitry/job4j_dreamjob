@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.job4j.dream.model.User;
 
 /**
  * Class PsqlStore
@@ -120,6 +121,32 @@ public class PsqlStore implements Store {
     }
 
     /**
+     * Метод возвращает всех пользователей из БД.
+     * @return Список пользователей.
+     */
+    @Override
+    public Collection<User> findAllUsers() {
+        List<User> users = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM users")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    User user = new User();
+                    user.setId(it.getInt("id"));
+                    user.setName(it.getString("name"));
+                    user.setEmail(it.getString("email"));
+                    user.setPassword(it.getString("password"));
+                    users.add(user);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка запроса.", e);
+        }
+        return users;
+    }
+
+    /**
      * Метод сохраняет или обновляет вакансию в БД
      * @param post Вакансия.
      */
@@ -142,6 +169,19 @@ public class PsqlStore implements Store {
             create(candidate);
         } else {
             update(candidate);
+        }
+    }
+
+    /**
+     * Метод сохраняет или обновляет пользователя в БД.
+     * @param user Пользователь.
+     */
+    @Override
+    public void save(User user) {
+        if (user.getId() == 0) {
+            create(user);
+        } else {
+            update(user);
         }
     }
 
@@ -195,6 +235,34 @@ public class PsqlStore implements Store {
             LOG.error("Ошибка записи.", e);
         }
         return candidate;
+    }
+
+    /**
+     * Метод сохраняет пользователя в БД.
+     * @param user Пользователь, которого нужно сохранить.
+     * @return Пользователь.
+     */
+    private User create(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement(
+                     "INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS
+             )
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    user.setId(id.getInt(1));
+                }
+            }
+            LOG.info("Создан пользователь {}", user);
+        } catch (Exception e) {
+            LOG.error("Ошибка записи.", e);
+        }
+        return user;
     }
 
     /**
@@ -255,6 +323,28 @@ public class PsqlStore implements Store {
     }
 
     /**
+     * Метод обновляет пользователя в БД.
+     * @param user Пользователь, которого нужно обновить.
+     */
+    private void update(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =
+                     cn.prepareStatement(
+                             "update users set name = ?, email = ?, password = ? where id = ?"
+                     )
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setInt(4, user.getId());
+            ps.executeUpdate();
+            LOG.info("Пользователь обновлен {}", user);
+        } catch (Exception e) {
+            LOG.error("Ошибка обновления.", e);
+        }
+    }
+
+    /**
      * Метод ищет вакансию в БД по ее идентификатору.
      * @param id Идентификатор вакансии.
      * @return Вакансия.
@@ -302,16 +392,74 @@ public class PsqlStore implements Store {
     }
 
     /**
+     * Метод ищет пользователя в БД по его идентификатору.
+     * @param id Идентификатор пользователя.
+     * @return Пользователь.
+     */
+    @Override
+    public User findUserById(int id) {
+        User user = null;
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("select * from users where id = ?")) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    user = new User();
+                    user.setId(id);
+                    user.setName(rs.getString("name"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка запроса.", e);
+        }
+        return user;
+    }
+
+    /**
      * Метод удаляет кандидата из БД.
      * @param id Идентификатор кандидата.
      */
     @Override
-    public void delete(int id) {
+    public void deleteCandidate(int id) {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement("delete from candidate where id = ?")) {
             ps.setInt(1, id);
             ps.executeUpdate();
             LOG.info("Кандидат с идентификатором {} удален", id);
+        } catch (Exception e) {
+            LOG.error("Ошибка удаления.", e);
+        }
+    }
+
+    /**
+     * Метод удаляет вакансию из БД.
+     * @param id Идентификатор вакансии.
+     */
+    @Override
+    public void deletePost(int id) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("delete from post where id = ?")) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            LOG.info("Вакансия с идентификатором {} удалена", id);
+        } catch (Exception e) {
+            LOG.error("Ошибка удаления.", e);
+        }
+    }
+
+    /**
+     * Метод удаляет пользователя из БД.
+     * @param id Идентификатор пользователя.
+     */
+    @Override
+    public void deleteUser(int id) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("delete from users where id = ?")) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            LOG.info("Пользователь с идентификатором {} удален", id);
         } catch (Exception e) {
             LOG.error("Ошибка удаления.", e);
         }

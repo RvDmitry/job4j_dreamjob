@@ -21,7 +21,7 @@ public class CandidateDeleteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        PsqlStore.instOf().delete(Integer.valueOf(req.getParameter("id")));
+        PsqlStore.instOf().deleteCandidate(Integer.valueOf(req.getParameter("id")));
         String photoId = req.getParameter("photoid");
         for (File name : new File("images").listFiles()) {
             if (name.getName().substring(0, name.getName().indexOf(".")).equals(photoId)) {
