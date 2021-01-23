@@ -35,15 +35,15 @@ public class MemStore implements Store {
     /**
      * Коллекция хранит объявления.
      */
-    private Map<Integer, Post> posts = new ConcurrentHashMap<>();
+    private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     /**
      * Коллекция хранит кандидатов.
      */
-    private Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
+    private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
     /**
      * Коллекция хранит пользователей.
      */
-    private Map<Integer, User> users = new ConcurrentHashMap<>();
+    private final Map<Integer, User> users = new ConcurrentHashMap<>();
 
     /**
      * Конструктор инициализирует хранилище.
@@ -156,6 +156,22 @@ public class MemStore implements Store {
     @Override
     public User findUserById(int id) {
         return users.get(id);
+    }
+
+    /**
+     * Метод осуществляет поиск пользователя по его email.
+     * @param email Email пользователя.
+     * @return Пользователь.
+     */
+    @Override
+    public User findUserByEmail(String email) {
+        for (var entry: users.entrySet()) {
+            User user = entry.getValue();
+            if (user.getEmail().equals(email)) {
+                return user;
+            }
+        }
+        return null;
     }
 
     /**

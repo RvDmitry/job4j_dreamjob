@@ -418,6 +418,32 @@ public class PsqlStore implements Store {
     }
 
     /**
+     * Метод осуществляет поиск пользователя в БД по его email.
+     * @param email Email пользователя.
+     * @return Пользователь.
+     */
+    @Override
+    public User findUserByEmail(String email) {
+        User user = null;
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("select * from users where email = ?")) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setName(rs.getString("name"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка запроса.", e);
+        }
+        return user;
+    }
+
+    /**
      * Метод удаляет кандидата из БД.
      * @param id Идентификатор кандидата.
      */

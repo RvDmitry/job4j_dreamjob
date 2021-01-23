@@ -71,6 +71,13 @@ public interface Store {
     User findUserById(int id);
 
     /**
+     * Метод ищет пользователя в БД по его email.
+     * @param email Email пользователя.
+     * @return Пользователь.
+     */
+    User findUserByEmail(String email);
+
+    /**
      * Метод удаляет кандидата из БД.
      * @param id Идентификатор кандидата.
      */
