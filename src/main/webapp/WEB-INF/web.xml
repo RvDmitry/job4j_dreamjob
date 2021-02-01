@@ -37,6 +37,10 @@
     <servlet-class>ru.job4j.dream.servlet.CandidateDeleteServlet</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>PostDeleteServlet</servlet-name>
+    <servlet-class>ru.job4j.dream.servlet.PostDeleteServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>AuthServlet</servlet-name>
     <servlet-class>ru.job4j.dream.servlet.AuthServlet</servlet-class>
   </servlet>
@@ -74,7 +78,11 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>CandidateDeleteServlet</servlet-name>
-    <url-pattern>/delete</url-pattern>
+    <url-pattern>/candelete</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PostDeleteServlet</servlet-name>
+    <url-pattern>/postdelete</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AuthServlet</servlet-name>

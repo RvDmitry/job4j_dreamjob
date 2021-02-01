@@ -50,6 +50,7 @@
                     <thead>
                     <tr>
                         <th scope="col">Названия</th>
+                        <th scope="col">Удалить вакансию</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -60,6 +61,9 @@
                                     <i class="fa fa-edit mr-3"></i>
                                 </a>
                                 <c:out value="${post.name}"/>
+                            </td>
+                            <td>
+                                <a href="<c:url value='/postdelete?id=${post.id}'/>">Удалить</a>
                             </td>
                         </tr>
                     </c:forEach>

@@ -76,7 +76,7 @@
                                 <a href="<c:url value='/upload?photoid=${can.photoId}'/>">Загрузить фото</a>
                             </td>
                             <td>
-                                <a href="<c:url value='/delete?id=${can.id}&photoid=${can.photoId}'/>">Удалить</a>
+                                <a href="<c:url value='/candelete?id=${can.id}&photoid=${can.photoId}'/>">Удалить</a>
                             </td>
                         </tr>
                     </c:forEach>
