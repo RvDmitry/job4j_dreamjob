@@ -24,7 +24,7 @@ public class PostServlet extends HttpServlet {
             throws ServletException, IOException {
         req.setAttribute("posts", new ArrayList<>(PsqlStore.instOf().findAllPosts()));
         req.setAttribute("user", req.getSession().getAttribute("user"));
-        req.getRequestDispatcher("posts.jsp").forward(req, resp);
+        req.getRequestDispatcher("/post/posts.jsp").forward(req, resp);
     }
 
     @Override

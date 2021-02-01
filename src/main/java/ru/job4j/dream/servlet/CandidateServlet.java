@@ -30,7 +30,7 @@ public class CandidateServlet extends HttpServlet {
         }
         req.setAttribute("images", images);
         req.setAttribute("candidates", new ArrayList<>(PsqlStore.instOf().findAllCandidates()));
-        req.getRequestDispatcher("candidates.jsp").forward(req, resp);
+        req.getRequestDispatcher("/candidate/candidates.jsp").forward(req, resp);
     }
 
     @Override
