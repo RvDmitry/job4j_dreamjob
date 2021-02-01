@@ -53,8 +53,8 @@
     <servlet-class>ru.job4j.dream.servlet.GreetingServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>UserSendServlet</servlet-name>
-    <servlet-class>ru.job4j.dream.servlet.UserSendServlet</servlet-class>
+    <servlet-name>SendServlet</servlet-name>
+    <servlet-class>ru.job4j.dream.servlet.SendServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>PostServlet</servlet-name>
@@ -97,7 +97,7 @@
     <url-pattern>/greet</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>UserSendServlet</servlet-name>
+    <servlet-name>SendServlet</servlet-name>
     <url-pattern>/send</url-pattern>
   </servlet-mapping>
 </web-app>
