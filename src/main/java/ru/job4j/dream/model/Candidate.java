@@ -21,6 +21,10 @@ public class Candidate {
      * Идентификатор фото кандидата.
      */
     private int photoId;
+    /**
+     * Идентификатор города кандидата.
+     */
+    private int cityId;
 
     /**
      * Конструктор создает кандидата.
@@ -80,6 +84,22 @@ public class Candidate {
         this.photoId = photoId;
     }
 
+    /**
+     * Метод возвращает идентификатор города.
+     * @return Идентификатор города.
+     */
+    public int getCityId() {
+        return cityId;
+    }
+
+    /**
+     * Метод задает идентификатор города.
+     * @param cityId Идентификатор города.
+     */
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,16 +109,21 @@ public class Candidate {
             return false;
         }
         Candidate candidate = (Candidate) o;
-        return id == candidate.id && Objects.equals(name, candidate.name);
+        return id == candidate.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return "Candidate{" + "id=" + id + ", name='" + name + '\'' + '}';
+        return "Candidate{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", photoId=" + photoId
+                + ", cityId=" + cityId
+                + '}';
     }
 }

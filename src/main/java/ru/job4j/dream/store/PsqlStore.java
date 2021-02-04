@@ -2,14 +2,12 @@ package ru.job4j.dream.store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.model.City;
 import ru.job4j.dream.model.Post;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -111,6 +109,7 @@ public class PsqlStore implements Store {
                 while (it.next()) {
                     Candidate candidate = new Candidate(it.getInt("id"), it.getString("name"));
                     candidate.setPhotoId(it.getInt("photoid"));
+                    candidate.setCityId(it.getInt("city_id"));
                     candidates.add(candidate);
                 }
             }
@@ -144,6 +143,27 @@ public class PsqlStore implements Store {
             LOG.error("Ошибка запроса.", e);
         }
         return users;
+    }
+
+    /**
+     * Метод возвращает все города из БД.
+     * @return Список городов.
+     */
+    @Override
+    public Collection<City> findAllCities() {
+        List<City> cities = new ArrayList<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps =  cn.prepareStatement("SELECT * FROM cities")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    cities.add(new City(it.getInt("id"), it.getString("name")));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка запроса.", e);
+        }
+        return cities;
     }
 
     /**
@@ -215,15 +235,21 @@ public class PsqlStore implements Store {
      * @return Сохраненный кандидат.
      */
     private Candidate create(Candidate candidate) {
+        int cityId = candidate.getCityId();
         try (Connection cn = pool.getConnection();
              PreparedStatement ps =  cn.prepareStatement(
-                     "INSERT INTO candidate(name, photoid) VALUES (?, ?)",
+                     "INSERT INTO candidate(name, photoid, city_id) VALUES (?, ?, ?)",
                      PreparedStatement.RETURN_GENERATED_KEYS
              )
         ) {
             int photoId = createPhotoId();
             ps.setString(1, candidate.getName());
             ps.setInt(2, photoId);
+            if (cityId != 0) {
+                ps.setInt(3, cityId);
+            } else {
+                ps.setNull(3, Types.NULL);
+            }
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -307,14 +333,19 @@ public class PsqlStore implements Store {
      * @param candidate Кандидат, которого нужно обновить.
      */
     private void update(Candidate candidate) {
+        int cityId = candidate.getCityId();
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps =
-                     cn.prepareStatement(
-                             "update candidate set name = ? where id = ?"
-                     )
+             PreparedStatement ps = cn.prepareStatement(
+                     "update candidate set name = ?, city_id = ? where id = ?"
+             )
         ) {
             ps.setString(1, candidate.getName());
-            ps.setInt(2, candidate.getId());
+            if (cityId != 0) {
+                ps.setInt(2, cityId);
+            } else {
+                ps.setNull(2, Types.NULL);
+            }
+            ps.setInt(3, candidate.getId());
             ps.executeUpdate();
             LOG.info("Кандидат обновлен {}", candidate);
         } catch (Exception e) {
@@ -383,6 +414,7 @@ public class PsqlStore implements Store {
                     String name = rs.getString("name");
                     candidate = new Candidate(id, name);
                     candidate.setPhotoId(rs.getInt("photoid"));
+                    candidate.setCityId(rs.getInt("city_id"));
                 }
             }
         } catch (Exception e) {

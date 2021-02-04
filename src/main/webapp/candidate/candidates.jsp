@@ -53,6 +53,7 @@
                     <tr>
                         <th scope="col">Названия</th>
                         <th scope="col">Фото</th>
+                        <th scope="col">Город</th>
                         <th scope="col">Удалить кандидата</th>
                     </tr>
                     </thead>
@@ -74,6 +75,20 @@
                                 </c:if>
                             </c:forEach>
                                 <a href="<c:url value='/upload?photoid=${can.photoId}'/>">Загрузить фото</a>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${can.cityId == 0}">
+                                        Не указан
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach items="${cities}" var="city">
+                                            <c:if test = "${can.cityId == city.id}">
+                                                ${city.name}
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                             <td>
                                 <a href="<c:url value='/candelete?id=${can.id}&photoid=${can.photoId}'/>">Удалить</a>

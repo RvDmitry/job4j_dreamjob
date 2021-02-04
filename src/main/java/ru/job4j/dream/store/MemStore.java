@@ -1,6 +1,7 @@
 package ru.job4j.dream.store;
 
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.model.City;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 
@@ -44,6 +45,10 @@ public class MemStore implements Store {
      * Коллекция хранит пользователей.
      */
     private final Map<Integer, User> users = new ConcurrentHashMap<>();
+    /**
+     * Коллекция хранит города.
+     */
+    private final Map<Integer, City> cities = new ConcurrentHashMap<>();
 
     /**
      * Конструктор инициализирует хранилище.
@@ -90,6 +95,15 @@ public class MemStore implements Store {
     @Override
     public Collection<User> findAllUsers() {
         return users.values();
+    }
+
+    /**
+     * Метод возвращает все города из хранилища.
+     * @return Коллекция городов.
+     */
+    @Override
+    public Collection<City> findAllCities() {
+        return cities.values();
     }
 
     /**
