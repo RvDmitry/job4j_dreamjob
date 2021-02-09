@@ -76,7 +76,7 @@
             <div class="card-body">
                 <form action="<%=request.getContextPath()%>/candidates.do?id=<%=can.getId()%>" method="post">
                     <div class="form-group">
-                        <label for="name">Имя:</label>
+                        <label for="name">Имя кандидата:</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Введите имя" value="<%=can.getName()%>">
                     </div>
                     <div class="form-group">
