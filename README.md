@@ -24,3 +24,11 @@
 к некоторым разделам сайта
 - Создание, редактирование, удаление информации о кандидатах и вакансиях
 - Добавление фото для кандидата. Фото сохраняется на сервере.
+
+![Screenshot](./images/Login.jpg)
+
+![Screenshot](./images/Registration.jpg)
+
+![Screenshot](./images/Creation.jpg)
+
+![Screenshot](./images/Candidates.jpg)
