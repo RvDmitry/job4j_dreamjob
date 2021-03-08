@@ -59,7 +59,7 @@ public class User {
     }
 
     /**
-     * Метод вовзращает email.
+     * Метод возвращает email.
      * @return Email.
      */
     public String getEmail() {
